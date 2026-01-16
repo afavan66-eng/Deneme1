@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body { margin: 0; background: black; display: flex; align-items: center; justify-content: center; height: 100vh; overflow: hidden; }
+        .btn { padding: 25px 60px; background: #900; color: white; border-radius: 50px; border: 4px solid white; font-weight: bold; cursor: pointer; font-size: 2rem; z-index: 10; }
+        #horror { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0); width: 100vw; height: 100vh; object-fit: contain; z-index: 100; pointer-events: none; }
+        .show { animation: jump 0.1s forwards; }
+        @keyframes jump { 0% { transform: translate(-50%, -50%) scale(0); } 100% { transform: translate(-50%, -50%) scale(1.5); } }
+    </style>
+</head>
+<body>
+    <button class="btn" onclick="start()">GERİ DÖN</button>
+    
+    <img id="horror" src="1.png">
+    <audio id="sc" src="1.mp3"></audio>
+
+    <script>
+        function start() {
+            document.getElementById('sc').play();
+            document.getElementById('horror').classList.add('show');
+            if (document.documentElement.requestFullscreen) { 
+                document.documentElement.requestFullscreen(); 
+            }
+        }
+    </script>
+</body>
+</html>
