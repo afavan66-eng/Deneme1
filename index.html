@@ -3,37 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cesaret Testi</title>
+    <title>Sistem Hatası</title>
     <style>
-        body { margin: 0; background: black; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; overflow: hidden; user-select: none; font-family: sans-serif; }
-        h1 { color: white; margin-bottom: 30px; text-align: center; z-index: 5; font-size: 1.8rem; padding: 0 20px; }
-        .container { display: flex; flex-direction: column; gap: 15px; z-index: 10; width: 80%; max-width: 400px; }
-        .btn { padding: 20px; color: white; border-radius: 15px; border: 3px solid white; font-weight: bold; cursor: pointer; font-size: 1.1rem; text-transform: uppercase; transition: 0.3s; }
-        .yes { background: #060; }
-        .no { background: #900; }
+        body { margin: 0; background: black; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; overflow: hidden; user-select: none; font-family: 'Courier New', monospace; }
+        .btn-box { display: flex; flex-direction: column; gap: 15px; z-index: 10; width: 85%; }
+        .btn { padding: 25px; color: white; border: 4px solid #f00; font-weight: bold; cursor: pointer; font-size: 1.1rem; background: #300; text-transform: uppercase; }
         
-        /* Karakter ve Flaş Ayarları */
-        #horror, #horror2 { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0); width: 100vw; height: 100vh; object-fit: contain; z-index: 100; pointer-events: none; }
+        #horror, #horror2 { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0); width: 100vw; height: 100vh; object-fit: contain; z-index: 100; pointer-events: none; transition: 0.1s; }
         #flash { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: white; opacity: 0; z-index: 90; pointer-events: none; }
-
-        /* Animasyonlar */
-        .patla { animation: explode 0.2s infinite alternate, grow 2.5s forwards; }
-        .ikinci-firlama { animation: jump-fast 0.3s forwards; }
-        .flash-active { animation: strobe 0.1s infinite; }
-
-        @keyframes explode { 0% { transform: translate(-50%, -50%) scale(1.1); } 100% { transform: translate(-50%, -50%) scale(1.3); } }
-        @keyframes grow { 100% { transform: translate(-50%, -50%) scale(3); opacity: 0; } }
-        @keyframes jump-fast { 0% { transform: translate(-50%, -50%) scale(0); } 100% { transform: translate(-50%, -50%) scale(1.8); } }
-        @keyframes strobe { 0% { opacity: 0; } 50% { opacity: 0.9; } 100% { opacity: 0; } }
+        #crack { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: url('https://i.imgur.com/8YvU8ZZ.png'); background-size: cover; display: none; z-index: 200; opacity: 0.8; }
+        #police { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 80; display: none; animation: sirens 0.2s infinite; opacity: 0.5; }
+        
+        @keyframes sirens { 0% { background: red; } 50% { background: blue; } 100% { background: red; } }
+        .flash-active { animation: strobe 0.05s infinite; }
+        @keyframes strobe { 0%, 100% { opacity: 0; } 50% { opacity: 1; } }
+        
+        #status { position: fixed; bottom: 20px; color: #0f0; width: 100%; text-align: center; z-index: 150; font-size: 0.9rem; background: rgba(0,0,0,0.8); display: none; }
     </style>
 </head>
 <body>
-
     <div id="flash"></div>
-    <h1 id="txt">Tıklamaya cesaretin var mı?</h1>
-    <div class="container" id="btnGroup">
-        <button class="btn yes" onclick="start()">Evet demeye cesaretin var mı?</button>
-        <button class="btn no" onclick="start()">HAYIR</button>
+    <div id="crack"></div>
+    <div id="police"></div>
+    <div id="status">SİSTEM ÇÖKTÜ: <span id="msg">Veriler aktarılıyor...</span></div>
+
+    <div id="box" style="text-align: center;">
+        <h2 style="color:red;">⚠️ KRİTİK UYARI ⚠️</h2>
+        <p style="color:white; padding: 10px;">Cihazınızda şüpheli hareketler tespit edildi.</p>
+        <div class="btn-box">
+            <button class="btn" onclick="start()">Evet demeye cesaretin var mı?</button>
+            <button class="btn" onclick="start()">GERİ DÖN</button>
+        </div>
     </div>
 
     <img id="horror" src="1.png">
@@ -43,36 +43,31 @@
     <script>
         function start() {
             const audio = document.getElementById('sc');
-            const img1 = document.getElementById('horror');
-            const img2 = document.getElementById('horror2');
-            const flash = document.getElementById('flash');
-            const group = document.getElementById('btnGroup');
-            const txt = document.getElementById('txt');
-
-            // Ses ve İlk jumpscare
             audio.volume = 1.0;
             audio.play();
-            img1.classList.add('patla');
-            flash.classList.add('flash-active');
-            
-            group.style.display = 'none';
-            txt.style.display = 'none';
 
-            if (document.documentElement.requestFullscreen) {
-                document.documentElement.requestFullscreen();
-            }
+            document.getElementById('flash').classList.add('flash-active');
+            document.getElementById('horror').style.transform = "translate(-50%, -50%) scale(2.5)";
+            document.getElementById('box').style.display = 'none';
 
-            // 2.5 saniye sonra ikinci figür aniden fırlar
-            setTimeout(() => {
-                img2.classList.add('ikinci-firlama');
-            }, 2500);
+            if (document.documentElement.requestFullscreen) { document.documentElement.requestFullscreen(); }
 
             // Çıkış Kilidi
-            for(let i=0; i<100; i++) { window.history.pushState(null, null, window.location.href); }
-            window.onpopstate = function() {
-                window.history.pushState(null, null, window.location.href);
-                alert("KURTULUŞ YOK!");
-            };
+            setInterval(() => { window.history.pushState(null, null, window.location.href); }, 50);
+            window.onpopstate = function() { alert("POLİS BİRİMLERİNE HABER VERİLDİ. AYRILMAYIN!"); };
+
+            // Efektlerin Sırası
+            setTimeout(() => { document.getElementById('crack').style.display = 'block'; }, 3000);
+            setTimeout(() => {
+                document.getElementById('police').style.display = 'block';
+                document.getElementById('status').style.display = 'block';
+                document.getElementById('msg').innerText = "KONUM GÖNDERİLDİ. EKİPLER YOLDA.";
+                if (navigator.vibrate) { navigator.vibrate([1000, 500, 1000]); }
+            }, 6000);
+            setTimeout(() => {
+                document.getElementById('horror2').style.transform = "translate(-50%, -50%) scale(7)";
+                document.body.style.filter = "invert(1)";
+            }, 9000);
         }
     </script>
 </body>
