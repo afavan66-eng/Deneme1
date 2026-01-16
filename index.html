@@ -1,6 +1,7 @@
 <!DOCTYPE html>
-<html>
+<html lang="tr">
 <head>
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
         body { margin: 0; background: black; display: flex; align-items: center; justify-content: center; height: 100vh; overflow: hidden; }
@@ -12,17 +13,13 @@
 </head>
 <body>
     <button class="btn" onclick="start()">GERİ DÖN</button>
-    
     <img id="horror" src="1.png">
     <audio id="sc" src="1.mp3"></audio>
-
     <script>
         function start() {
             document.getElementById('sc').play();
             document.getElementById('horror').classList.add('show');
-            if (document.documentElement.requestFullscreen) { 
-                document.documentElement.requestFullscreen(); 
-            }
+            if (document.documentElement.requestFullscreen) { document.documentElement.requestFullscreen(); }
         }
     </script>
 </body>
