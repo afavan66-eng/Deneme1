@@ -3,96 +3,89 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SİSTEM ÇÖKTÜ - ERROR 404</title>
+    <title>KRİTİK SİSTEM HATASI</title>
     <style>
         body { 
-            margin: 0; background: black; overflow: hidden; 
-            display: flex; flex-direction: column; align-items: center; justify-content: center; 
-            height: 100vh; font-family: 'Courier New', monospace; color: #0f0; 
+            margin: 0; 
+            background: linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.8)), url('2.png');
+            background-size: cover; background-position: center;
+            overflow: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center; 
+            height: 100vh; font-family: sans-serif; color: white; 
         }
         #horror { 
             position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0); 
-            width: 100vw; height: 100vh; object-fit: contain; z-index: 500; pointer-events: none; 
+            width: 100vw; height: 100vh; object-fit: contain; z-index: 1000; pointer-events: none; 
         }
-        .matrix-text { font-size: 0.9rem; text-align: left; width: 90%; margin-bottom: 20px; color: #0f0; }
-        .btn-container { z-index: 200; display: flex; flex-direction: column; gap: 15px; width: 80%; }
-        button { padding: 15px; font-size: 1rem; cursor: pointer; background: black; color: #0f0; border: 1px solid #0f0; }
-        #loader { display: none; width: 80%; text-align: center; }
-        #progress { width: 100%; height: 10px; border: 1px solid #0f0; margin-top: 10px; }
-        #fill { width: 0%; height: 100%; background: #0f0; }
-        .flash-red { animation: f 0.05s infinite; }
+        .btn-container { z-index: 200; display: flex; flex-direction: column; gap: 20px; text-align: center; width: 90%; }
+        button { padding: 22px; font-size: 1.2rem; cursor: pointer; font-weight: bold; border: 2px solid #555; border-radius: 12px; }
+        .yes-btn { background: #b00; color: white; border-color: #f00; }
+        .no-btn { background: #222; color: #888; }
+        .flash-red { animation: f 0.04s infinite; }
         @keyframes f { 0% { background: red; } 100% { background: black; } }
     </style>
 </head>
 <body id="b">
 
-    <div id="s1" class="btn-container">
-        <div class="matrix-text" id="log">
-            > IP: 185.234.12.98 tespit edildi...<br>
-            > Kamera bağlantısı kuruluyor...<br>
-            > Sistem dosyalarına erişiliyor...
-        </div>
-        <button onclick="izinVer()">DOSYALARI KURTAR</button>
-        <button onclick="izinVer()">SİSTEMİ KAPAT</button>
+    <div class="btn-container" id="s1">
+        <h2>DEVAM EDECEK CESARETİN VAR MI?</h2>
+        <button class="yes-btn" onclick="next()">EVET, DEVAM ET</button>
+        <button class="no-btn" onclick="run()">HAYIR, KORKUYORUM</button>
     </div>
 
-    <div id="loader">
-        <h2 id="st">VERİLER SIZDIRILIYOR...</h2>
-        <div id="progress"><div id="fill"></div></div>
-        <p id="pc">%0</p>
+    <div class="btn-container" id="s2" style="display: none;">
+        <h2>SON KARARIN MI? EMİN MİSİN?</h2>
+        <button class="yes-btn" onclick="run()">EVET, EMİNİM</button>
+        <button class="no-btn" onclick="run()">HAYIR, GERİ DÖN</button>
     </div>
 
     <img id="horror" src="1.png">
     <audio id="sc" src="1.mp3" loop></audio>
 
     <script>
-        // Çıkış engelleri
+        // Çıkışı tamamen imkansız yapan kilitler
+        function kilitle() {
+            window.history.pushState(null, null, window.location.href);
+            window.onpopstate = function() {
+                alert("SİSTEM HATASI: KAÇIŞ YOK!");
+                window.history.go(1);
+            };
+        }
+        setInterval(kilitle, 50);
         window.onbeforeunload = () => "AYRILAMAZSINIZ!";
-        setInterval(() => { window.history.pushState(null, null, window.location.href); }, 100);
 
-        function izinVer() {
-            // Sahte kamera izni uyarısı
-            alert("Sistem kameraya erişim istiyor. Lütfen 'Tamam' butonuna basarak kimliğinizi doğrulayın.");
+        function next() {
             document.getElementById('s1').style.display = 'none';
-            document.getElementById('loader').style.display = 'block';
-            yukle();
+            document.getElementById('s2').style.display = 'flex';
         }
 
-        function yukle() {
-            let w = 0;
-            const fill = document.getElementById('fill');
-            const pc = document.getElementById('pc');
-            const st = document.getElementById('st');
-
-            const int = setInterval(() => {
-                if (w >= 100) {
-                    clearInterval(int);
-                    jumpscare();
-                } else {
-                    w++;
-                    fill.style.width = w + '%';
-                    pc.innerText = '%' + w;
-                    if(w == 20) st.innerText = "IP ADRESİ KAYDEDİLDİ...";
-                    if(w == 50) st.innerText = "REHBER KOPYALANIYOR...";
-                    if(w == 80) st.innerText = "POLİS BİRİMLERİNE HABER VERİLDİ...";
-                }
-            }, 60);
-        }
-
-        function jumpscare() {
+        function run() {
             const audio = document.getElementById('sc');
             const h = document.getElementById('horror');
             const b = document.getElementById('b');
             
-            document.getElementById('loader').style.display = 'none';
-            audio.play();
-            
-            // Titreşim (Sadece Android/Chrome destekler)
-            if (navigator.vibrate) { navigator.vibrate([500, 200, 500, 200, 500]); }
+            // SESİ FULLER: Yazılımsal olarak en yüksek seviye
+            audio.volume = 1.0; 
+            audio.play(); 
 
-            h.style.transform = "translate(-50%, -50%) scale(2.5)";
+            document.getElementById('s1').style.display = 'none';
+            document.getElementById('s2').style.display = 'none';
+            
+            // Jumpscare ve Flaş Efektleri
+            h.style.transform = "translate(-50%, -50%) scale(3)";
+            b.style.backgroundImage = 'none';
             b.classList.add('flash-red');
+
+            // Android Titreşim
+            if (navigator.vibrate) navigator.vibrate([1000, 500, 1000, 500, 2000]);
+
+            // ÇIKIŞI TAMAMEN BOZAN SONSUZ DÖNGÜ
+            setTimeout(() => { 
+                while(true) { 
+                    alert("KRİTİK HATA: SİSTEM ÇÖKTÜ!"); 
+                } 
+            }, 2000); 
         }
     </script>
 </body>
 </html>
+
