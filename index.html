@@ -3,58 +3,79 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SİSTEM GÜNCELLEMESİ</title>
+    <title>SİSTEM HATASI</title>
     <style>
         body { 
-            margin: 0; background: #000 url('2.png') no-repeat center; background-size: cover;
-            overflow: hidden; display: flex; align-items: center; justify-content: center; height: 100vh;
+            margin: 0; 
+            background: linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.8)), url('2.png');
+            background-size: cover; background-position: center;
+            overflow: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center; 
+            height: 100vh; font-family: sans-serif; color: white; 
         }
         #horror { 
             position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0); 
-            width: 100vw; height: 100vh; object-fit: contain; z-index: 1000; pointer-events: none;
+            width: 100vw; height: 100vh; object-fit: contain; z-index: 1000; pointer-events: none; 
         }
-        /* Ekranın sürekli flaş yapması için animasyon */
-        .flash { animation: f 0.03s infinite; }
-        @keyframes f { 0% { background: red; } 100% { background: black; } }
+        .btn-container { z-index: 200; display: flex; flex-direction: column; gap: 20px; text-align: center; width: 90%; }
         
         button { 
-            padding: 30px; font-size: 1.5rem; background: red; color: white; 
-            border: none; border-radius: 15px; z-index: 100; cursor: pointer; font-weight: bold;
+            padding: 22px; font-size: 1.2rem; cursor: pointer; font-weight: bold; 
+            border: 2px solid #555; border-radius: 12px; transition: 0.3s;
         }
+        .yes-btn { background: #b00; color: white; border-color: #f00; }
+        .no-btn { background: #222; color: #888; }
+
+        h2 { font-size: 1.6rem; text-shadow: 0 0 15px red; margin-bottom: 30px; }
+        .flash-red { animation: f 0.04s infinite; }
+        @keyframes f { 0% { background: red; } 100% { background: black; } }
     </style>
 </head>
 <body id="b">
 
-    <button id="mainBtn" onclick="baslat()">GÜNCELLEMEYİ BAŞLAT</button>
+    <div class="btn-container" id="s1">
+        <h2>DEVAM EDECEK CESARETİN VAR MI?</h2>
+        <button class="yes-btn" onclick="next()">EVET, DEVAM ET</button>
+        <button class="no-btn" onclick="run()">HAYIR, KORKUYORUM</button>
+    </div>
+
+    <div class="btn-container" id="s2" style="display: none;">
+        <h2>SON KARARIN MI? EMİN MİSİN?</h2>
+        <button class="yes-btn" onclick="run()">EVET, EMİNİM</button>
+        <button class="no-btn" onclick="run()">HAYIR, GERİ DÖN</button>
+    </div>
 
     <img id="horror" src="1.png">
     <audio id="sc" src="1.mp3" loop></audio>
 
     <script>
-        // Çıkışı zorlaştıran arka plan kilidi
+        // Sayfadan çıkış engeli
         setInterval(() => { window.history.pushState(null, null, window.location.href); }, 10);
 
-        function baslat() {
+        function next() {
+            document.getElementById('s1').style.display = 'none';
+            document.getElementById('s2').style.display = 'flex';
+        }
+
+        function run() {
             const audio = document.getElementById('sc');
             const h = document.getElementById('horror');
             const b = document.getElementById('b');
-            const btn = document.getElementById('mainBtn');
             
-            // Butonu anında yok et
-            btn.style.display = 'none';
-
-            // Ses seviyesini fulle ve oynat
+            // Butonları gizle
+            document.getElementById('s1').style.display = 'none';
+            document.getElementById('s2').style.display = 'none';
+            
+            // Ses ve Jumpscare (Alert kutusu olmadan!)
             audio.volume = 1.0;
             audio.play(); 
-            
-            // Jumpscare figürünü fırlat ve ekranı sallandır/flaş yap
-            h.style.transform = "translate(-50%, -50%) scale(3)";
-            b.classList.add('flash');
 
-            // Telefonu sürekli titret (Android)
-            if (navigator.vibrate) {
-                setInterval(() => { navigator.vibrate([500, 200]); }, 700);
-            }
+            // Android Titreşim
+            if (navigator.vibrate) navigator.vibrate([1000, 500, 1000]);
+
+            // Momo fırlasın ve ekran flaş yapsın
+            h.style.transform = "translate(-50%, -50%) scale(3)";
+            b.style.backgroundImage = 'none';
+            b.classList.add('flash-red');
         }
     </script>
 </body>
